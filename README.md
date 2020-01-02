@@ -14,7 +14,7 @@ Objective: This test will be a fully functional web application that will displa
 1. The backend will provide an API for accepting requests from the front end.
 2. The API will allow GET requests for getting all records. 
 3. The API will allow POST requests for save, update, and delete.  
-(The impementation for these can be mocked. You do not have to write to the data file.)
+(The implementation for these can be mocked. You do not have to write to the data file.)
 4. The API response will be JSON formatted data.
 5. The data will be read from a provided data file.
 
@@ -29,7 +29,7 @@ Objective: This test will be a fully functional web application that will displa
 2. The fist row of the data file will contain the field names.
 
 ## Tests
-1. Any testing framework/runner will be allowed with explicit instructions. If you are looking for one to use, we use Coeception.
+1. Any testing framework/runner will be allowed with explicit instructions. If you are looking for one to use, we use Codeception.
 2. Any type of tests, Unit, Functional, Acceptance, or API tests.
 3. The more test case coverage the better.
   
