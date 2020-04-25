@@ -42,13 +42,18 @@ The container name is `test-app-container`
 
 #### Testing
 To run the test (PHPUnit Feature Tests), run the command below:
+
 `docker exec -i test-app-container bash -c "cd /var/www/html && ./vendor/bin/phpunit tests"`
 
 
 ## Frontend
 Navigate to the `frontend` directory and run `npm install -g @angular/cli` in your terminal. This installs the Angular CLI globally
+
 After, run `npm install`
+
 Navigate to `src/app/environments/env.ts` and modify the `apiUrl` variable to point to the URI of the application. The default URL from docker ss: `http://localhost:8080/api`
+
 Run `ng serve` to start the development server.
+
 The frontend is an Angular 9 based application.
 	
