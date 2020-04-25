@@ -1,6 +1,6 @@
 # Test Order Application
 
-##Architecture
+## Architecture
 Since the project required raw PHP, I decided to build a micro framework from scratch (google code snippets doesn't count right) to handle requests and make testing easier
 
 It is based on the Model-View-Controller design pattern.
@@ -13,7 +13,7 @@ There are a few helper functions which make the core of the framework
     5. CSVDatabase - This is our database ORM class for the csv database
     6. Helper - Various methods used throughout the application
     
-###Lifecycle of Application
+### Lifecycle of Application
 
 When a user hits the application, Apache .htaccess rewrites the URL to the index file (for clean urls).
 
@@ -27,19 +27,19 @@ NB: There might probably be a few bugs/quirks with the application so please bea
 
 The tests are only feature tests, I planned to write lots of Unit tests, but I didn't get the chance. I still went on to write a few Feature tests to demonstrate my understanding of testing
 
-##Requirements
+## Requirements
 1. Docker
 2. composer
 3. PHP 7+
 4. Node.js and NPM
 
-##Installation
+## Installation
 
-###Backend
+### Backend
 Navigate to the backend folder and run the `./startup.sh` in your terminal. This should install composer packages (PHPUnit) and Provision the docker container
 The container name is `test-app-container`
 
-####Testing
+#### Testing
 To run the test (PHPUnit Feature Tests), run the command below:
 `docker exec -i test-app-container bash -c "cd /var/www/html && ./vendor/bin/phpunit tests"`
 
