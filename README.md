@@ -1,17 +1,18 @@
 # Test Order Application
 
 ## Architecture
-Since the project required raw PHP, I decided to build a micro framework from scratch (google code snippets doesn't count right) to handle requests and make testing easier
+Since the project required raw PHP, I decided to build a micro framework from scratch (googling code snippets don't count right?) to handle requests and make testing easier
 
 It is based on the Model-View-Controller design pattern.
 
 There are a few helper functions which make the core of the framework
-    1. Router - This receives the request and routes it to a specified controller. It can also accept a callback.
-    2. Request - This is a simple request bag. It automatically processes requests from POST/GET, or parses JSON requests
-    3. Dependency Injection Container - This is a simple dependency container that provides automatic injection. Very useful for tests.
-    4. Validator - This is a simple validator to validate our requests before storing them. The Request class implements this.
-    5. CSVDatabase - This is our database ORM class for the csv database
-    6. Helper - Various methods used throughout the application
+
+1. Router - This receives the request and routes it to a specified controller. It can also accept a callback.
+2. Request - This is a simple request bag. It automatically processes requests from POST/GET, or parses JSON requests
+3. Dependency Injection Container - This is a simple dependency container that provides automatic injection. Very useful for tests.
+4. Validator - This is a simple validator to validate our requests before storing them. The Request class implements this.
+5. CSVDatabase - This is our database ORM class for the csv database
+6. Helper - Various methods used throughout the application
     
 ### Lifecycle of Application
 
