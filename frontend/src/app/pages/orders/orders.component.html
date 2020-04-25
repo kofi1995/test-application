@@ -1,0 +1,220 @@
+<ng-template #content2 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Are you sure?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete Order with ID: {{deleteOrderId}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-outline-danger" (click)="deleteOrder(deleteOrderId)">Delete</button>
+  </div>
+</ng-template>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add new Order</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="addOrderForm" (ngSubmit)="addOrderSubmit()">
+    <div class="modal-body">
+      <div *ngIf="success" class="alert alert-success mt-3 mb-0">
+        <p>{{success}}</p>
+      </div>
+      <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+        {{error}}
+      </div>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.name.errors }" />
+        <div *ngIf="submitted && aof.name.errors" class="invalid-feedback">
+          <div *ngIf="aof.name.errors.required">Name is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="state">State</label>
+        <select formControlName="state" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.state.errors }">
+          <option [ngValue]="" disabled>Please Select</option>
+          <option *ngFor="let state of states" [ngValue]="state.abbreviation">{{state.name}}</option>
+        </select>
+        <div *ngIf="submitted && aof.state.errors" class="invalid-feedback">
+          <div *ngIf="aof.state.errors.required">State is required</div>
+          <div *ngIf="aof.state.errors.minLength">State must be 2 characters</div>
+          <div *ngIf="aof.state.errors.maxLength">State must be 2 characters</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="zip">ZIP</label>
+        <input type="text" formControlName="zip" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.zip.errors }" />
+        <div *ngIf="submitted && aof.zip.errors" class="invalid-feedback">
+          <div *ngIf="aof.zip.errors.required">Zip is required</div>
+          <div *ngIf="aof.zip.errors.pattern">ZIP must be 5 digits</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="number" formControlName="amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.amount.errors }" />
+        <div *ngIf="submitted && aof.amount.errors" class="invalid-feedback">
+          <div *ngIf="aof.amount.errors.required">Amount is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="Quantity">Quantity</label>
+        <input type="number" formControlName="qty" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.qty.errors }" />
+        <div *ngIf="submitted && aof.qty.errors" class="invalid-feedback">
+          <div *ngIf="aof.qty.errors.required">Quantity is required</div>
+          <div *ngIf="aof.qty.errors.min">Quantity must be at least 1</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="Item">Item</label>
+        <input type="text" formControlName="item" class="form-control" [ngClass]="{ 'is-invalid': submitted && aof.item.errors }" />
+        <div *ngIf="submitted && aof.item.errors" class="invalid-feedback">
+          <div *ngIf="aof.item.errors.required">Item is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+      <button [disabled]="loading" class="btn btn-outline-dark">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Add
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="col-md-12 mt-2">
+  <div class="card">
+    <div class="card-header">
+      <h4>Orders Table</h4>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-lg btn-outline-primary" (click)="addOrderPopup(content)">Add Order</button>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>State</th>
+              <th>Zip</th>
+              <th>Amount</th>
+              <th>Quantity</th>
+              <th>Item</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="orders">
+                <tr *ngFor="let order of orders">
+                  <td>{{order.id}}</td>
+                  <td>
+                    <ng-container> {{order.name}} </ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'name', order.name)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'name')" *ngIf="showEditForm && columnEditName == 'name' && columnEditId == order.id">
+                      <label class="sr-only">Name</label>
+                      <input type="text" formControlName="edit_var" class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <ng-container>{{order.state}}</ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'state', order.state)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'state')" *ngIf="showEditForm && columnEditName == 'state' && columnEditId == order.id">
+                      <label class="sr-only">State</label>
+                      <select formControlName="edit_var" class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                        <option *ngFor="let state of states" [ngValue]="state.abbreviation" [selected]="state.abbreviation == order.state">{{state.name}}</option>
+                      </select>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <ng-container>{{order.zip}}</ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'zip', order.zip)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'zip')" *ngIf="showEditForm && columnEditName == 'zip' && columnEditId == order.id">
+                      <label class="sr-only">Zip</label>
+                      <input type="text" pattern="^\d{5}$" formControlName="edit_var"  class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <ng-container>{{order.amount}}</ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'amount', order.amount)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'amount')" *ngIf="showEditForm && columnEditName == 'amount' && columnEditId == order.id">
+                      <label class="sr-only">Amount</label>
+                      <input type="number" formControlName="edit_var"  class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <ng-container>{{order.qty}}</ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'qty', order.qty)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'qty')" *ngIf="showEditForm && columnEditName == 'qty' && columnEditId == order.id">
+                      <label class="sr-only">Quantity</label>
+                      <input type="number" min="1" formControlName="edit_var"  class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <ng-container>{{order.item}}</ng-container>
+                    <button class="btn btn-link" (click)="showEditColumn(order.id, 'item', order.item)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <form class="form-inline" [formGroup]="editColumnForm" (ngSubmit)="editColumnSubmit(order.id, 'item')" *ngIf="showEditForm && columnEditName == 'item' && columnEditId == order.id">
+                      <label class="sr-only">Item</label>
+                      <input type="text" formControlName="edit_var"  class="form-control mb-2 mr-sm-2" [ngClass]="{ 'is-invalid': submittedColumn && ecf.edit_var.errors }" required>
+                      <button type="button" class="btn btn-danger mb-2 btn-sm" (click)="hideEditColumn()">Cancel</button>
+                      <button type="submit" [disabled]="loadingColumn" class="btn btn-primary mb-2 btn-sm">
+                        <span *ngIf="loadingColumn" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <button class="btn btn-link" (click)="showDeleteOrderModal(content2, order.id)" *ngIf="!showEditForm">
+                      <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+    </div>
+  </div>
+</div>

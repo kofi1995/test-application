@@ -1,44 +1,53 @@
-# GreenIT Application Challenge
+# Test Order Application
 
-This project is the seed files needed to create a GreenIT test application.  
+##Architecture
+Since the project required raw PHP, I decided to build a micro framework from scratch (google code snippets doesn't count right) to handle requests and make testing easier
 
-Objective: This test will be a fully functional web application that will display the given data from a csv file, and allow full editing capabilties of the data.
+It is based on the Model-View-Controller design pattern.
 
-## Application Version Requirements
-1. Frontend must be in Anguar 7+
-2. Backend must be in PHP 7+
-3. You may include any npm modules needed.
-4. Frontend should be built using npm, backend should be raw php files.
+There are a few helper functions which make the core of the framework
+    1. Router - This receives the request and routes it to a specified controller. It can also accept a callback.
+    2. Request - This is a simple request bag. It automatically processes requests from POST/GET, or parses JSON requests
+    3. Dependency Injection Container - This is a simple dependency container that provides automatic injection. Very useful for tests.
+    4. Validator - This is a simple validator to validate our requests before storing them. The Request class implements this.
+    5. CSVDatabase - This is our database ORM class for the csv database
+    6. Helper - Various methods used throughout the application
+    
+###Lifecycle of Application
 
-## Backend Requirements
-1. The backend will provide an API for accepting requests from the front end.
-2. The API will allow GET requests for getting all records. 
-3. The API will allow POST requests for save, update, and delete.  
-(The implementation for these can be mocked. You do not have to write to the data file.)
-4. The API response will be JSON formatted data.
-5. The data will be read from a provided data file.
+When a user hits the application, Apache .htaccess rewrites the URL to the index file (for clean urls).
 
-## Frontend Requirements
-1. Data will be displayed in a table view.
-2. Each column header in the table will correspond to a field name in the data file.
-3. Allow each row and field to be edited.
-4. Allow record creation and deletion, either inline or modal.
-  
-## Data
-1. Data will be provided as csv text file.
-2. The fist row of the data file will contain the field names.
+The routes which are declared in the index.php file searches for a match, and passes the request to a specified Controller method/callback function (I didn't have time to write a Middleware, bear with me)
 
-## Tests
-1. Any testing framework/runner will be allowed with explicit instructions. If you are looking for one to use, we use Codeception.
-2. Any type of tests, Unit, Functional, Acceptance, or API tests.
-3. The more test case coverage the better.
-  
- ## Extras
-1. We use Docker containers, extra points if you set this to run using Docker compose cli.
-2. We use Bootstrap styles, extra points including that in the UI.
-3. Show different parent child communication styles within your application.
-4. Show or describe web server architecture used.
-5. Extra points for making an easy comand line install. 
-6. Make the API fully functional, and write to the CSV file.
+When the Controller method is fired, it is instantiated with the Request class, Helper class, and CSVDatabase class
 
+Controller can process data from the request class, and return data (currently just raw data)
+
+NB: There might probably be a few bugs/quirks with the application so please bear with me, I have not had lots of time this week.
+
+The tests are only feature tests, I planned to write lots of Unit tests, but I didn't get the chance. I still went on to write a few Feature tests to demonstrate my understanding of testing
+
+##Requirements
+1. Docker
+2. composer
+3. PHP 7+
+4. Node.js and NPM
+
+##Installation
+
+###Backend
+Navigate to the backend folder and run the `./startup.sh` in your terminal. This should install composer packages (PHPUnit) and Provision the docker container
+The container name is `test-app-container`
+
+####Testing
+To run the test (PHPUnit Feature Tests), run the command below:
+`docker exec -i test-app-container bash -c "cd /var/www/html && ./vendor/bin/phpunit tests"`
+
+
+## Frontend
+Navigate to the `frontend` directory and run `npm install -g @angular/cli` in your terminal. This installs the Angular CLI globally
+After, run `npm install`
+Navigate to `src/app/environments/env.ts` and modify the `apiUrl` variable to point to the URI of the application. The default URL from docker ss: `http://localhost:8080/api`
+Run `ng serve` to start the development server.
+The frontend is an Angular 9 based application.
 	
